@@ -5,7 +5,6 @@ from verifier import EmailVerifier
 from verifier.func import get_host_name_from_email, get_mx_hosts, get_mx_ip
 
 
-@pytest.mark.asyncio
 async def test_host_name_from_email(sample_existing_emails):
     for email in sample_existing_emails:
         host_name = get_host_name_from_email(email)

@@ -1,9 +1,7 @@
 import pytest
-import pytest_asyncio
 
 
 @pytest.fixture
-@pytest_asyncio.fixture
 def sample_existing_emails() -> list[str]:
     return [
         "felipebogaerts@gmail.com",
@@ -12,7 +10,6 @@ def sample_existing_emails() -> list[str]:
 
 
 @pytest.fixture
-@pytest_asyncio.fixture
 def sample_invalid_emails() -> list[str]:
     return [
         "jdsnfadsjfdasklm",

@@ -10,22 +10,6 @@ class NotValidEmail(Exception):
     pass
 
 
-class SMTPServerDisconnected(Exception):
-    pass
-
-
-class SMTPConnectionError(Exception):
-    pass
-
-
-class RequestTimeout(Exception):
-    pass
-
-
-class SocketError(Exception):
-    pass
-
-
 class EmailVerifier:
     def __init__(self, email: str):
         self.email = email
@@ -47,32 +31,23 @@ class EmailVerifier:
 
         return False
 
-    def validate_mx_registry(self, timeout: Optional[float | int] = 5):
+    def validate_mx_registry(self, timeout: Optional[float | int] = 1):
         email = self.email
         mx = get_mx_hosts(self.email)
 
-        try:
-            smtp = smtplib.SMTP(mx[0].to_text(), timeout=timeout)
+        smtp = smtplib.SMTP(str(mx[0].to_text().split()[1][:-1]), timeout=timeout)
 
-            status, _ = smtp.ehlo()
+        status, _ = smtp.ehlo()
 
-            if status >= 400:
-                smtp.quit()
-                return False
-
-            smtp.mail("")
-            status, _ = smtp.rcpt(email)
+        if status >= 400:
             smtp.quit()
+            return False
 
-            if int(status / 100) == 2:  # response status is 2xx
-                return True
-            else:
-                return False
-        except smtplib.SMTPServerDisconnected:
-            raise SMTPServerDisconnected(f"Host '{mx}' disconnected")
-        except smtplib.SMTPConnectError:
-            raise SMTPConnectionError(f"Unable to connect to host '{mx}'")
-        except socket.timeout:
-            raise RequestTimeout(f"Request timed out")
-        except socket.error:
-            raise SocketError(f"Socket error")
+        smtp.mail("")
+        status, _ = smtp.rcpt(email)
+        smtp.quit()
+
+        if int(status / 100) == 2:  # response status is 2xx
+            return True
+        else:
+            return False

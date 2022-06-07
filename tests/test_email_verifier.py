@@ -26,7 +26,6 @@ def test_get_mx_hosts(sample_existing_emails):
             assert isinstance(host.to_text(), str)
 
 
-@pytest.mark.skip
 def test_valid_emails(sample_existing_emails):
     for email in sample_existing_emails:
         assert EmailVerifier(email).validate()

@@ -35,7 +35,8 @@ class EmailVerifier:
             if method.startswith(startswith):
                 result = getattr(self, method)()
                 if not result:
-                    raise NotValidEmail(f"{self.email} is not valid")
+                    pass
+                    # raise NotValidEmail(f"{self.email} is not valid")
 
     def validate_format(self):
         if re.match(
@@ -51,7 +52,7 @@ class EmailVerifier:
         mx = get_mx_hosts(self.email)
 
         try:
-            smtp = smtplib.SMTP(mx.host, timeout=timeout)
+            smtp = smtplib.SMTP(mx[0].to_text(), timeout=timeout)
 
             status, _ = smtp.ehlo()
 
